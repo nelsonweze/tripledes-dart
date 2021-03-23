@@ -3,7 +3,7 @@ import 'package:tripledes/src/utils.dart';
 
 abstract class Engine {
   void init(bool forEncryption, List<int?> key);
-  List<int?> process(List<int?> dataWords);
+  List<int?> process(List<int> dataWords);
   void reset();
 }
 
@@ -24,7 +24,7 @@ abstract class BaseEngine implements Engine {
 
   int processBlock(List<int?> M, int offset);
 
-  List<int?> process(List<int?> dataWords) {
+  List<int?> process(List<int> dataWords) {
     var blockSize = 2;
 
     if (forEncryption) {

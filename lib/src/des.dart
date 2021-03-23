@@ -3,7 +3,6 @@ import 'package:tripledes/src/engine.dart';
 import 'package:tripledes/src/utils.dart';
 
 class DESEngine extends BaseEngine {
-  
   List<List<int>>? _subKeys;
   int? _lBlock;
   int? _rBlock;
@@ -15,12 +14,12 @@ class DESEngine extends BaseEngine {
   void init(bool forEncryption, List<int?> key) {
     super.init(forEncryption, key);
     // Select 56 bits according to PC1
-    var keyBits = new List<int?>(56);
+    var keyBits = <int?>[56];
     for (var i = 0; i < 56; i++) {
       var keyBitPos = PC1[i] - 1;
       keyBits[i] = (rightShift32(
-          this.key![rightShift32(keyBitPos, 5)]!, (31 - keyBitPos % 32))) &
-      1;
+              this.key![rightShift32(keyBitPos, 5)]!, (31 - keyBitPos % 32))) &
+          1;
     }
 
     // Assemble 16 subkeys
@@ -55,7 +54,9 @@ class DESEngine extends BaseEngine {
   }
 
   int processBlock(List<int?> M, int offset) {
-    List<List<int>?> invSubKeys = new List(16);
+    List<List<int>?> invSubKeys = [
+      [16]
+    ];
     if (!forEncryption) {
       for (var i = 0; i < 16; i++) {
         invSubKeys[i] = _subKeys![15 - i];
@@ -84,8 +85,8 @@ class DESEngine extends BaseEngine {
       var f = 0.toSigned(32);
       for (var i = 0; i < 8; i++) {
         (f |= SBOX_P[i][((rBlock ^ subKey![i]).toSigned(32) & SBOX_MASK[i])
-            .toUnsigned(32)]!
-            .toSigned(32))
+                    .toUnsigned(32)]!
+                .toSigned(32))
             .toSigned(32);
       }
       this._lBlock = rBlock.toSigned(32);
@@ -121,22 +122,29 @@ class DESEngine extends BaseEngine {
   // Swap bits across the left and right words
   void exchangeLR(offset, mask) {
     var t =
-    (((rightShift32(this._lBlock!, offset)).toSigned(32) ^ this._rBlock!) &
-    mask)
-        .toSigned(32);
-    (this._rBlock ^= t).toSigned(32);
-    this._lBlock ^= (t << offset).toSigned(32);
+        (((rightShift32(this._lBlock!, offset)).toSigned(32) ^ this._rBlock!) &
+                mask)
+            .toSigned(32);
+    var rblock = this._rBlock!;
+    var lblock = this._lBlock!;
+
+    rblock = (rblock ^= t).toSigned(32);
+    lblock = lblock ^= (t << offset).toSigned(32);
+    this._lBlock = lblock;
+    this._rBlock = rblock;
   }
 
   void exchangeRL(offset, mask) {
     var t =
-    (((rightShift32(this._rBlock!, offset)).toSigned(32) ^ this._lBlock!) &
-    mask)
-        .toSigned(32);
-    (this._lBlock ^= t).toSigned(32);
-    this._rBlock ^= (t << offset).toSigned(32);
+        (((rightShift32(this._rBlock!, offset)).toSigned(32) ^ this._lBlock!) &
+                mask)
+            .toSigned(32);
+    var rblock = this._rBlock!;
+    var lblock = this._lBlock!;
+
+    rblock = (rblock ^= t).toSigned(32);
+    lblock = lblock ^= (t << offset).toSigned(32);
+    this._lBlock = lblock;
+    this._rBlock = rblock;
   }
 }
-
-
-
