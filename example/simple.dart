@@ -1,4 +1,4 @@
-import 'package:tripledes/tripledes.dart';
+import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
 
 main() {
   var key = "cipher";

@@ -1,8 +1,8 @@
 // Copyright (c) 2017, john. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-import 'package:tripledes/src/utils.dart';
-import 'package:tripledes/tripledes.dart';
+import 'package:tripledes_nullsafety/src/utils.dart';
+import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
 import 'package:test/test.dart';
 import 'dart:convert';
 
@@ -139,7 +139,7 @@ class TestCase {
     var inp = hexParse(this.inp);
     var expected = hexParse(this.expected);
     b.init(true, key);
-    var result = new List<int?>.from(inp);
+    var result = new List<int>.from(inp);
     b.processBlock(result, 0);
     expect(result, equals(expected));
     expect(hexToString(result), equals(this.expected));

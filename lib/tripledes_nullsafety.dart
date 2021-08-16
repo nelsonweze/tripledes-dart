@@ -12,7 +12,9 @@ class BlockCipher {
   final Engine engine;
   final String key;
 
-  BlockCipher(this.engine, this.key);
+  BlockCipher(this.engine, this.key) {
+    print(utf8ToWords(key));
+  }
 
   String encode(String message) {
     engine.init(true, utf8ToWords(key));

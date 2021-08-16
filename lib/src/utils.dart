@@ -62,9 +62,9 @@ void pkcs7Pad(List<int> data, int blockSize) {
   concat(data, padding);
 }
 
-void pkcs7Unpad(List<int?> data, int blockSize) {
+void pkcs7Unpad(List<int> data, int blockSize) {
   var sigBytes = data.length;
-  var nPaddingBytes = data[rightShift32(sigBytes - 1, 2)]! & 0xff;
+  var nPaddingBytes = data[rightShift32(sigBytes - 1, 2)] & 0xff;
   data.length -= nPaddingBytes;
 }
 
@@ -101,7 +101,7 @@ concat(List<int> a, List<int> b) {
   a.length = thisSigBytes + thatSigBytes;
 }
 
-void expandList(List<int?> data, int newLength) {
+void expandList(List<int> data, int newLength) {
   if (newLength <= data.length) {
     return;
   }
@@ -139,14 +139,14 @@ List<int> utf8ToWords(String inp) {
 }
 
 // Latin1.stringify
-String wordsToUtf8(List<int?> words) {
+String wordsToUtf8(List<int> words) {
   var sigBytes = words.length;
   var chars = <int>[];
   for (var i = 0; i < sigBytes; i++) {
     if (words[i >> 2] == null) {
       words[i >> 2] = 0;
     }
-    var bite = (words[i >> 2]!.toSigned(32) >> (24 - (i % 4) * 8)) & 0xff;
+    var bite = ((words[i >> 2]).toSigned(32) >> (24 - (i % 4) * 8)) & 0xff;
     chars.add(bite);
   }
 
@@ -161,7 +161,7 @@ List<int> parseBase64(String base64Str) {
   var base64StrLength = base64Str.length;
 
   if (reverseMap == null) {
-    reverseMap = [123];
+    reverseMap = new List<int>.filled(123, 0);
     for (var j = 0; j < map.length; j++) {
       reverseMap[map.codeUnits[j]] = j;
     }
@@ -169,10 +169,11 @@ List<int> parseBase64(String base64Str) {
 
   // Ignore padding
   var paddingChar = map.codeUnits[64];
-
-  var paddingIndex = base64Str.codeUnits.indexOf(paddingChar);
-  if (paddingIndex != -1) {
-    base64StrLength = paddingIndex;
+  if (paddingChar != null) {
+    var paddingIndex = base64Str.codeUnits.indexOf(paddingChar);
+    if (paddingIndex != -1) {
+      base64StrLength = paddingIndex;
+    }
   }
 
   List<int> parseLoop(
