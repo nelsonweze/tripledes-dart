@@ -1,13 +1,11 @@
-name: tripledes
+name: tripledes_nullsafety
 description: Triple DES and DES block cipher implementation ported from CryptoJS
-version: 2.1.0
-homepage: https://github.com/johnpryan/tripledes-dart
-author: John Ryan <john.p.ryan4@gmail.com>
+version: 1.0.1
+homepage: https://github.com/nelstein/tripledes-dart
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
   
-publish_to: none
 
 dependencies: 
   flutter:
