@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Fixed null issues 
+
 ## 1.0.1
 
 * Fixed issues with nullsafety

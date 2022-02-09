@@ -3,14 +3,14 @@ import 'package:tripledes_nullsafety/src/utils.dart';
 
 abstract class Engine {
   void init(bool forEncryption, List<int> key);
-  List<int> process(List<int> dataWords);
+  List<int> process(List<int?> dataWords);
   void reset();
 }
 
 /// BufferedBlockAlgorithm.process()
 abstract class BaseEngine implements Engine {
-  bool forEncryption = false;
-  late List<int> key;
+  late bool forEncryption;
+  List<int>? key;
 
   void init(bool forEncryption, List<int> key) {
     this.key = key;
@@ -18,16 +18,16 @@ abstract class BaseEngine implements Engine {
   }
 
   void reset() {
-    key.clear();
+    key = null;
     forEncryption = false;
   }
 
-  int processBlock(List<int> M, int offset);
+  int processBlock(List<int?> M, int offset);
 
-  List<int> process(List<int> dataWords) {
+  List<int> process(List<int?> dataWords) {
     var blockSize = 2;
 
-    if (forEncryption) {
+    if (forEncryption == true) {
       pkcs7Pad(dataWords, blockSize);
     }
 
@@ -54,7 +54,7 @@ abstract class BaseEngine implements Engine {
     var nBytesReady = min(nWordsReady * 4, dataSigBytes);
 
     // Process blocks
-    List<int> processedWords = [];
+    List<int?>? processedWords;
     if (nWordsReady != 0) {
       for (var offset = 0; offset < nWordsReady; offset += blockSize) {
         // Perform concrete-algorithm logic
@@ -67,13 +67,13 @@ abstract class BaseEngine implements Engine {
     }
 
     var result = new List<int>.generate(nBytesReady, (i) {
-      if (i < processedWords.length) {
-        return processedWords[i];
+      if (i < processedWords!.length) {
+        return processedWords[i]!;
       }
       return 0;
     });
 
-    if (!forEncryption) {
+    if (forEncryption == false) {
       pkcs7Unpad(result, blockSize);
     }
 
