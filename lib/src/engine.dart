@@ -28,24 +28,18 @@ abstract class BaseEngine implements Engine {
     var blockSize = 2;
 
     if (forEncryption == true) {
-      pkcs7Pad(dataWords, blockSize);
+      pkcs7Pad(dataWords.toList(), blockSize);
     }
-
-    var doFlush = false;
     var dataSigBytes = dataWords.length;
     var blockSizeBytes = blockSize * 4;
     var minBufferSize = 0;
 
     // Count blocks ready
     var nBlocksReady = dataSigBytes ~/ blockSizeBytes;
-    if (doFlush) {
-      // Round up to include partial blocks
-      nBlocksReady = nBlocksReady.ceil();
-    } else {
-      // Round down to include only full blocks,
-      // less the number of blocks that must remain in the buffer
-      nBlocksReady = max((nBlocksReady | 0) - minBufferSize, 0);
-    }
+
+    // Round down to include only full blocks,
+    // less the number of blocks that must remain in the buffer
+    nBlocksReady = max((nBlocksReady | 0) - minBufferSize, 0);
 
     // Count words ready
     var nWordsReady = nBlocksReady * blockSize;

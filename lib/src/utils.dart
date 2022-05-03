@@ -85,9 +85,7 @@ concat(List<int?> a, List<int> b) {
     for (var i = 0; i < thatSigBytes; i++) {
       var thatByte = (thatWords[i >> 2] >> (24 - (i % 4) * 8)) & 0xff;
       var idx = (thisSigBytes + i) >> 2;
-      for (var i = thisWords.length; i < idx + 1; i++) {
-        a.add(0);
-      }
+      expandList(thisWords, idx + 1);
       thisWords[idx] =
           thisWords[idx]! | thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
     }
@@ -96,7 +94,9 @@ concat(List<int?> a, List<int> b) {
     for (var i = 0; i < thatSigBytes; i += 4) {
       var idx = (thisSigBytes + i) >> 2;
       if (idx >= thisWords.length) {
-        thisWords.length = idx + 1;
+        for (var i = thisWords.length; i < idx + 1; i++) {
+          thisWords.add(0);
+        }
       }
       thisWords[idx] = thatWords[i >> 2];
     }
