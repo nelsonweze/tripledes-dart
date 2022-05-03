@@ -112,7 +112,9 @@ void expandList(List<int?> data, int newLength) {
   }
 
   // update the length
-  data.length = newLength;
+  for (var i = data.length; i < newLength; i++) {
+    data.add(0);
+  }
 
   // replace any new allocations with 0
   for (var i = 0; i < data.length; i++) {
