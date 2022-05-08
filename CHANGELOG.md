@@ -1,3 +1,5 @@
+## 1.0.3
+* bug fixes
 ## 1.0.2
 
 * Fixed null issues 
